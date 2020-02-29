@@ -54,6 +54,6 @@ function cloneArray(input) {
 }
 
 
-if (module) {
+if (typeof module != 'undefined') {
   module.exports = {elevateMap, lowerMap};
 }
