@@ -33,9 +33,14 @@ function init() {
   drawMap(map);
 
   canvas = document.getElementById('the-map');
+
+  canvas.height = 500;
+  canvas.width = 500;
+
   canvas.onclick = onLeftClick;
   canvas.oncontextmenu = onRightClick;
-  console.log('DÁN');
+
+  drawMap(map);
 }
 
 function onRightClick(e) {
@@ -51,10 +56,9 @@ function onClick(e, method) {
   const rect = canvas.getBoundingClientRect();
   const xPos = e.clientX - rect.left;
   const yPos = e.clientY - rect.top;
-  const size = canvas.height / n;
 
-  const x = Math.floor(xPos / size);
-  const y = Math.floor(yPos / size);
+  const x = Math.floor(xPos / (canvas.clientHeight / n));
+  const y = Math.floor(yPos / (canvas.clientHeight / n));
 
   map = method(map, x, y);
 

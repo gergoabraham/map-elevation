@@ -1,25 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Map elevation</title>
-        <meta charset="UTF-8">
-        <meta
-            name='viewport'
-            content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>
-    </head>
 
-    <body>
-        <style>
-            body {
-                text-align: center;
-            }
-        </style>
-        <h1>Map elevation</h1>
-        <canvas id="the-map" width="500px" height="500px"></canvas>
-        <br>
-        <a href="https://github.com/gergooo/map-elevation" target="blank">Check out on Github</a>
+<head>
+    <title>Draw your landscape</title>
 
-        <script src="js/map-elevation.js"></script>
-        <script src="js/draw-map.js"></script>
-    </body>
+    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+</head>
+
+<body>
+    <h1>Draw your landscape</h1>
+
+    <div id="map-container">
+        <canvas id="the-map"></canvas>
+        <div id="legend">
+            <p>Left click - elevate</p>
+            <p>Right click - lower</p>
+        </div>
+    </div>
+
+    <a id="github-logo" href="https://github.com/gergooo/map-elevation" target="blank">
+        <img src="images/GitHub-Mark-64px.png" />
+    </a>
+
+    <script src="js/map-elevation.js"></script>
+    <script src="js/draw-map.js"></script>
+</body>
+
 </html>
