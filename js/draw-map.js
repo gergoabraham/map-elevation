@@ -1,46 +1,28 @@
-const n = 10;
+const n = 50;
 let canvas;
-let map = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-];
-
-function drawMap(map) {
-  const canvas = document.getElementById('the-map');
-  const ctx = canvas.getContext('2d');
-
-  const size = canvas.height / n;
-
-  for (let x = 0; x < n; x++) {
-    for (let y = 0; y < n; y++) {
-      const val = map[x][y];
-      const color = val * 10 + 128;
-      ctx.fillStyle = `rgb(${color}, ${color}, ${color})`;
-      ctx.fillRect(x * size, y * size, size, size);
-    }
-  }
-}
+let ctx;
+let map;
 
 function init() {
+  ({canvas, ctx} = initCanvas());
+  map = initMap();
   drawMap(map);
+}
 
-  canvas = document.getElementById('the-map');
-
+function initCanvas() {
+  const canvas = document.getElementById('the-map');
   canvas.height = 500;
   canvas.width = 500;
-
   canvas.onclick = onLeftClick;
   canvas.oncontextmenu = onRightClick;
 
-  drawMap(map);
+  const ctx = canvas.getContext('2d');
+
+  return {canvas, ctx};
+}
+
+function onLeftClick(e) {
+  onClick(e, elevateMap);
 }
 
 function onRightClick(e) {
@@ -48,21 +30,52 @@ function onRightClick(e) {
   onClick(e, lowerMap);
 }
 
-function onLeftClick(e) {
-  onClick(e, elevateMap);
+function onClick(e, updateMap) {
+  const {x, y} = calculateCoordinates(e);
+  map = updateMap(map, x, y);
+  drawMap(map);
 }
 
-function onClick(e, method) {
-  const rect = canvas.getBoundingClientRect();
-  const xPos = e.clientX - rect.left;
-  const yPos = e.clientY - rect.top;
+function calculateCoordinates(e) {
+  const canvasBoundingRect = canvas.getBoundingClientRect();
+  const xPos = e.clientX - canvasBoundingRect.left;
+  const yPos = e.clientY - canvasBoundingRect.top;
 
-  const x = Math.floor(xPos / (canvas.clientHeight / n));
-  const y = Math.floor(yPos / (canvas.clientHeight / n));
+  const elemSizeAtClient = canvas.clientWidth / n;
 
-  map = method(map, x, y);
+  const x = Math.floor(xPos / elemSizeAtClient);
+  const y = Math.floor(yPos / elemSizeAtClient);
 
-  drawMap(map);
+  return {x, y};
+}
+
+function initMap() {
+  const newMap = [];
+  for (let i = 0; i < n; i++) {
+    newMap[i] = [];
+    for (let j = 0; j < n; j++) {
+      newMap[i][j] = 0;
+    }
+  }
+  return newMap;
+}
+
+function drawMap(map) {
+  const elemSize = canvas.height / n;
+
+  for (let x = 0; x < n; x++) {
+    for (let y = 0; y < n; y++) {
+      const color = getColor(map[x][y]);
+      ctx.fillStyle = color;
+      ctx.fillRect(x * elemSize, y * elemSize, elemSize, elemSize);
+    }
+  }
+}
+
+function getColor(value) {
+  const grayscaleColor = value * 10 + 128;
+  const hexValue = grayscaleColor.toString(16);
+  return `#${hexValue}${hexValue}${hexValue}`;
 }
 
 document.body.onload = init;
