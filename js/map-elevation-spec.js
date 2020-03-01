@@ -104,6 +104,25 @@ describe('MapModification', function() {
       });
     });
 
+    context('limits', function() {
+      it('should not elevate over limit', function() {
+        let iterations = elevateMap(inputMap, 3, 3, [0, 7]);
+        for (let i = 0; i < 12; i++) {
+          iterations = elevateMap(iterations, 3, 3, [0, 7]);
+        }
+
+        iterations.should.deep.equal([
+          [1, 2, 3, 4, 3, 2, 1],
+          [2, 3, 4, 5, 4, 3, 2],
+          [3, 4, 5, 6, 5, 4, 3],
+          [4, 5, 6, 7, 6, 5, 4],
+          [3, 4, 5, 6, 5, 4, 3],
+          [2, 3, 4, 5, 4, 3, 2],
+          [1, 2, 3, 4, 3, 2, 1],
+        ]);
+      });
+    });
+
     context('boundaries', function() {
       it('should skip upper neighbours', function() {
         const firstIteration = elevateMap(inputMap, 0, 1);
@@ -206,6 +225,25 @@ describe('MapModification', function() {
           [0, 0, 0, 0, -1, 0, 0],
           [0, 0, 0, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0],
+        ]);
+      });
+    });
+
+    context('limits', function() {
+      it('should not lower below limit', function() {
+        let iterations = lowerMap(inputMap, 3, 3, [-7, 7]);
+        for (let i = 0; i < 10; i++) {
+          iterations = lowerMap(iterations, 3, 3, [-7, 7]);
+        }
+
+        iterations.should.deep.equal([
+          [-1, -2, -3, -4, -3, -2, -1],
+          [-2, -3, -4, -5, -4, -3, -2],
+          [-3, -4, -5, -6, -5, -4, -3],
+          [-4, -5, -6, -7, -6, -5, -4],
+          [-3, -4, -5, -6, -5, -4, -3],
+          [-2, -3, -4, -5, -4, -3, -2],
+          [-1, -2, -3, -4, -3, -2, -1],
         ]);
       });
     });

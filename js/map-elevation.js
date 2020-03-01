@@ -1,25 +1,32 @@
-function elevateMap(input, x, y) {
-  return modifyMap(input, x, y, (x) => x + 1);
+function elevateMap(input, x, y, limits = [-100, 100]) {
+  return modifyMap(input, x, y, (x) => x + 1, limits);
 }
 
-function lowerMap(input, x, y) {
-  return modifyMap(input, x, y, (x) => x - 1);
+function lowerMap(input, x, y, limits = [-100, 100]) {
+  return modifyMap(input, x, y, (x) => x - 1, limits);
 }
 
-function modifyMap(input, x, y, modification) {
+function modifyMap(input, x, y, modification, limits) {
   let area = cloneArray(input);
 
   area[x][y] = modification(area[x][y]);
+  area[x][y] = limitValueTo(limits, area[x][y]);
 
   const neighborCoordinates = generateNeighborCoordinates(x, y);
 
   neighborCoordinates.forEach(([nx, ny]) => {
     if (areCoordinatesOkay(nx, ny, area) &&
         isDifferenceTooLarge(area, x, y, nx, ny)) {
-      area = modifyMap(area, nx, ny, modification);
+      area = modifyMap(area, nx, ny, modification, limits);
     }
   });
   return area;
+}
+
+function limitValueTo(limits, value) {
+  const limitedFromBelow = Math.max(limits[0], value);
+  const limitedFromAbove = Math.min(limits[1], limitedFromBelow);
+  return limitedFromAbove;
 }
 
 function generateNeighborCoordinates(x, y) {

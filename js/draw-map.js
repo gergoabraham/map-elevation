@@ -32,7 +32,7 @@ function onRightClick(e) {
 
 function onClick(e, updateMap) {
   const {x, y} = calculateCoordinates(e);
-  map = updateMap(map, x, y);
+  map = updateMap(map, x, y, [-10, 10]);
   drawMap(map);
 }
 
