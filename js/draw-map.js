@@ -2,6 +2,9 @@ const n = 50; // min 40
 let canvas;
 let ctx;
 let map;
+let drawingIntervalId;
+let mouseX;
+let mouseY;
 
 const minValue = -0.3 * n;
 const maxValue = 0.3 * n;
@@ -27,33 +30,58 @@ function initCanvas() {
   const canvas = document.getElementById('the-map');
   canvas.height = 500;
   canvas.width = 500;
-  canvas.onclick = onLeftClick;
-  canvas.oncontextmenu = onRightClick;
-
   const ctx = canvas.getContext('2d');
+
+  initMouseActions(canvas);
 
   return {canvas, ctx};
 }
 
-function onLeftClick(e) {
-  onClick(e, elevateMap);
+function initMouseActions(canvas) {
+  canvas.onmousedown = startDrawingBasedOnMouseButton;
+  canvas.onmousemove = saveMousePosition;
+  canvas.onmouseup = stopDrawing;
+  canvas.onmouseout = stopDrawing;
+  canvas.oncontextmenu = preventContextMenu;
 }
 
-function onRightClick(e) {
+function saveMousePosition(e) {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+}
+
+function startDrawingBasedOnMouseButton(e) {
+  if (e.which == 1) {
+    startDrawing(elevateMap);
+  } else if (e.which == 3) {
+    startDrawing(lowerMap);
+  }
+}
+
+function startDrawing(method) {
+  draw(method);
+
+  drawingIntervalId = setInterval(() => draw(method), 50);
+}
+
+function stopDrawing(e) {
+  clearInterval(drawingIntervalId);
+}
+
+function preventContextMenu(e) {
   e.preventDefault();
-  onClick(e, lowerMap);
 }
 
-function onClick(e, updateMap) {
-  const {x, y} = calculateCoordinates(e);
-  map = updateMap(map, x, y, [minValue, maxValue]);
+function draw(method) {
+  const {x, y} = calculateCoordinates();
+  map = method(map, x, y, [minValue, maxValue]);
   drawMap(map);
 }
 
-function calculateCoordinates(e) {
+function calculateCoordinates() {
   const canvasBoundingRect = canvas.getBoundingClientRect();
-  const xPos = e.clientX - canvasBoundingRect.left;
-  const yPos = e.clientY - canvasBoundingRect.top;
+  const xPos = mouseX - canvasBoundingRect.left;
+  const yPos = mouseY - canvasBoundingRect.top;
 
   const elemSizeAtClient = canvas.clientWidth / n;
 
