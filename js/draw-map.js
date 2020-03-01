@@ -21,9 +21,19 @@ const colors = {
 
 function init() {
   ({canvas, ctx} = initCanvas());
+  initMouseActions(canvas);
+  initResetAction();
   map = initMap();
   initColors();
   drawMap(map);
+}
+
+function initResetAction() {
+  const reset = document.getElementById('reset');
+  reset.onclick = () => {
+    map = initMap();
+    drawMap(map);
+  };
 }
 
 function initCanvas() {
@@ -31,8 +41,6 @@ function initCanvas() {
   canvas.height = 500;
   canvas.width = 500;
   const ctx = canvas.getContext('2d');
-
-  initMouseActions(canvas);
 
   return {canvas, ctx};
 }
