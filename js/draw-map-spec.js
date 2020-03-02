@@ -4,7 +4,7 @@ chai.should();
 global.document = {body: {onload: {}}};
 ({getColor, initColors} = require('./draw-map'));
 
-describe.only('Draw map spec', function() {
+describe('Draw map spec', function() {
   before(function() {
     initColors();
   });
