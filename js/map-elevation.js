@@ -22,10 +22,9 @@ function modifyMapRecursion(area, x, y, modification, limits) {
   neighborCoordinates.forEach(([nx, ny]) => {
     if (areCoordinatesOkay(nx, ny, area) &&
       isDifferenceTooLarge(area, x, y, nx, ny)) {
-      area = modifyMapRecursion(area, nx, ny, modification, limits);
+      modifyMapRecursion(area, nx, ny, modification, limits);
     }
   });
-  return area;
 }
 
 function limitValueTo(limits, value) {
