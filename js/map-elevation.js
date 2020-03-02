@@ -7,8 +7,13 @@ function lowerMap(input, x, y, limits = [-100, 100]) {
 }
 
 function modifyMap(input, x, y, modification, limits) {
-  let area = cloneArray(input);
+  const area = cloneArray(input);
+  modifyMapRecursion(area, x, y, modification, limits);
+  return area;
+}
 
+// not pure, to spare all the array copies in each iteration
+function modifyMapRecursion(area, x, y, modification, limits) {
   area[x][y] = modification(area[x][y]);
   area[x][y] = limitValueTo(limits, area[x][y]);
 
@@ -16,8 +21,8 @@ function modifyMap(input, x, y, modification, limits) {
 
   neighborCoordinates.forEach(([nx, ny]) => {
     if (areCoordinatesOkay(nx, ny, area) &&
-        isDifferenceTooLarge(area, x, y, nx, ny)) {
-      area = modifyMap(area, nx, ny, modification, limits);
+      isDifferenceTooLarge(area, x, y, nx, ny)) {
+      area = modifyMapRecursion(area, nx, ny, modification, limits);
     }
   });
   return area;
