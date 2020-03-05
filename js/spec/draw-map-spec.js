@@ -2,7 +2,7 @@ const chai = require('chai');
 chai.should();
 
 global.document = {body: {onload: {}}};
-({getColor, initColors} = require('./draw-map'));
+({getColor, initColors} = require('../draw-map'));
 
 describe('Draw map spec', function() {
   before(function() {

@@ -1,7 +1,7 @@
 const chai = require('chai');
 chai.should();
 
-({elevateMap, lowerMap} = require('./map-elevation'));
+({elevateMap, lowerMap} = require('../map-elevation'));
 
 const inputMap = [
   [0, 0, 0, 0, 0, 0, 0],

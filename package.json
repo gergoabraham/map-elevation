@@ -4,7 +4,7 @@
   "description": "An algorithmical practice to recoursively handling map elevation.",
   "main": "map-elevation.js",
   "scripts": {
-    "test": "mocha --watch js/*-spec.js"
+    "test": "mocha --watch js/spec/*-spec.js"
   },
   "keywords": [
     "nodejs",
