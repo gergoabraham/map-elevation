@@ -68,13 +68,15 @@ function startDrawingBasedOnMouseButton(e) {
 }
 
 function startDrawing(method) {
-  draw(method);
-
-  drawingIntervalId = setInterval(() => draw(method), 50);
+  if (!drawingIntervalId) {
+    draw(method);
+    drawingIntervalId = setInterval(() => draw(method), 50);
+  }
 }
 
 function stopDrawing(e) {
   clearInterval(drawingIntervalId);
+  drawingIntervalId = undefined;
 }
 
 function preventContextMenu(e) {
