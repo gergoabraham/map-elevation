@@ -1,8 +1,9 @@
 const n = 50; // min 40
+
 let canvas;
 let ctx;
 let map;
-let drawingIntervalId;
+let operationIntervalId;
 let mouseX;
 let mouseY;
 
@@ -21,10 +22,10 @@ const colorKeys = {
 let colorTable;
 
 function init() {
-  ({canvas, ctx} = initCanvas());
-  initMouseActions(canvas);
   initResetAction();
   map = initMap();
+  ({canvas, ctx} = initCanvas());
+  initMouseActions(canvas);
   colorTable = calculateInterpolatedColorTable(colorKeys, minValue, maxValue);
   drawMap(map);
 }
@@ -37,6 +38,17 @@ function initResetAction() {
   };
 }
 
+function initMap() {
+  const newMap = [];
+  for (let i = 0; i < n; i++) {
+    newMap[i] = [];
+    for (let j = 0; j < n; j++) {
+      newMap[i][j] = 0;
+    }
+  }
+  return newMap;
+}
+
 function initCanvas() {
   const canvas = document.getElementById('the-map');
   canvas.height = 500;
@@ -47,11 +59,12 @@ function initCanvas() {
 }
 
 function initMouseActions(canvas) {
-  canvas.onmousedown = startDrawingBasedOnMouseButton;
   canvas.onmousemove = saveMousePosition;
-  canvas.onmouseup = stopDrawing;
-  canvas.onmouseout = stopDrawing;
-  canvas.oncontextmenu = preventContextMenu;
+  canvas.oncontextmenu = (e) => e.preventDefault();
+
+  canvas.onmousedown = startOperationBasedOnMouseButton;
+  canvas.onmouseup = stopOperation;
+  canvas.onmouseout = stopOperation;
 }
 
 function saveMousePosition(e) {
@@ -59,31 +72,27 @@ function saveMousePosition(e) {
   mouseY = e.clientY;
 }
 
-function startDrawingBasedOnMouseButton(e) {
+function startOperationBasedOnMouseButton(e) {
   if (e.which == 1) {
-    startDrawing(elevateMap);
+    startOperation(elevateMap);
   } else if (e.which == 3) {
-    startDrawing(lowerMap);
+    startOperation(lowerMap);
   }
 }
 
-function startDrawing(method) {
-  if (!drawingIntervalId) {
-    draw(method);
-    drawingIntervalId = setInterval(() => draw(method), 50);
+function startOperation(method) {
+  if (!operationIntervalId) {
+    performOperation(method);
+    operationIntervalId = setInterval(() => performOperation(method), 50);
   }
 }
 
-function stopDrawing(e) {
-  clearInterval(drawingIntervalId);
-  drawingIntervalId = undefined;
+function stopOperation() {
+  clearInterval(operationIntervalId);
+  operationIntervalId = undefined;
 }
 
-function preventContextMenu(e) {
-  e.preventDefault();
-}
-
-function draw(method) {
+function performOperation(method) {
   const {x, y} = calculateCoordinates();
   map = method(map, x, y, [minValue, maxValue]);
   drawMap(map);
@@ -102,27 +111,16 @@ function calculateCoordinates() {
   return {x, y};
 }
 
-function initMap() {
-  const newMap = [];
-  for (let i = 0; i < n; i++) {
-    newMap[i] = [];
-    for (let j = 0; j < n; j++) {
-      newMap[i][j] = 0;
-    }
-  }
-  return newMap;
-}
-
 function drawMap(map) {
   const elemSize = canvas.height / n;
 
   for (let x = 0; x < n; x++) {
     for (let y = 0; y < n; y++) {
-      const color = colorTable[map[x][y]];
-      ctx.fillStyle = color;
+      ctx.fillStyle = colorTable[map[x][y]];
       ctx.fillRect(x * elemSize, y * elemSize, elemSize, elemSize);
     }
   }
 }
+
 
 document.body.onload = init;
